@@ -1,21 +1,24 @@
+# Import necessary modules for MySQL connection and error handling
 import mysql.connector
 from mysql.connector import Error
 import logging
 import mysql.connector
 global cnx
 
+# Establish a global MySQL connection
 cnx = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Vinayak@2024",
-    database="pandeyji_eatery")
+    host="localhost", # MySQL server address
+    user="root",      # MySQL username
+    password="Vinayak@20011", # MySQL password
+    database="pandeyji_eatery") # Database name
 
 # Function to call the MySQL stored procedure and insert an order item
+# Function to insert an order item using a stored procedure i.e.(calling MYSQL)
 def insert_order_item(food_item, quantity, order_id):
     try:
         cursor = cnx.cursor()
 
-        # Calling the stored procedure
+        # Calling the stored procedure to insert the order item
         cursor.callproc('insert_order_item', (food_item, quantity, order_id))
 
         # Committing the changes
@@ -26,28 +29,28 @@ def insert_order_item(food_item, quantity, order_id):
 
         print("Order item inserted successfully!")
 
-        return 1
+        return 1 # Return success indicator
 
     except mysql.connector.Error as err:
         print(f"Error inserting order item: {err}")
 
-        # Rollback changes if necessary
+        # Rollback changes if necessary(in case of error)
         cnx.rollback()
 
-        return -1
+        return -1 # Return success indicator
 
     except Exception as e:
         print(f"An error occurred: {e}")
         # Rollback changes if necessary
         cnx.rollback()
 
-        return -1
+        return -1 # Return error indicator
 
-# Function to insert a record into the order_tracking table
+# Function to insert a record(order tracking status) into the order_tracking table
 def insert_order_tracking(order_id, status):
     cursor = cnx.cursor()
 
-    # Inserting the record into the order_tracking table
+    # Inserting the record into the order_tracking table(updating tracking status)
     insert_query = "INSERT INTO order_tracking (order_id, status) VALUES (%s, %s)"
     cursor.execute(insert_query, (order_id, status))
 
@@ -57,6 +60,7 @@ def insert_order_tracking(order_id, status):
     # Closing the cursor
     cursor.close()
 
+# Function to retrieve the total price of an order
 def get_total_order_price(order_id):
     cursor = cnx.cursor()
 
@@ -70,7 +74,7 @@ def get_total_order_price(order_id):
     # Closing the cursor
     cursor.close()
 
-    return result
+    return result  # Return the total order price
 
 # Function to get the next available order_id
 def get_next_order_id():
@@ -86,7 +90,7 @@ def get_next_order_id():
     # Closing the cursor
     cursor.close()
 
-    # Returning the next available order_id
+    # If no orders exist, start from 1; otherwise, returning the next available order_id
     if result is None:
         return 1
     else:
@@ -106,7 +110,7 @@ def get_order_status(order_id):
     # Closing the cursor
     cursor.close()
 
-    # Returning the order status
+    # Returning the order status if found, otherwise return None
     if result:
         return result[0]
     else:
