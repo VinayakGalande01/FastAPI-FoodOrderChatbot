@@ -7,10 +7,10 @@ global cnx
 
 # Establish a global MySQL connection
 cnx = mysql.connector.connect(
-    host="localhost", # MySQL server address
-    user="root",      # MySQL username
-    password="Vinayak@20011", # MySQL password
-    database="pandeyji_eatery") # Database name
+    host="your_localhost", # MySQL server address
+    user="your_root",      # MySQL username
+    password="your_password", # MySQL password
+    database="database_name") # Database name
 
 # Function to call the MySQL stored procedure and insert an order item
 # Function to insert an order item using a stored procedure i.e.(calling MYSQL)
